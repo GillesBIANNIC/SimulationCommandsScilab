@@ -142,18 +142,21 @@ for i=0:dt:25
            x(4)*x(4) * sin(x(5)) * ( cos(x(3)+x(5))) ];
     u = Ax\(v-Bx);
     x = x + evolution_tric(x,u) * dt;
+    x(3) = modulo(x(3)+%pi, 2*%pi) - %pi; // pour éviter les violents demi-tours
     [tricC, tricR] = draw_tric(x);
     Err = [Err ; abs(xd - x(1)) + abs(yd - x(2))];
     
     // remorque 1 vise le point derrière le tricycle d'une distance L
     c1u = slidingRegulation(c1x, [x(1)-L1*cos(x(3)), x(2)-L1*sin(x(3))]);
     c1x = c1x + evolution_char(c1x,c1u) * dt;
+    c1x(3) = modulo(c1x(3)+%pi, 2*%pi) - %pi; // pour éviter les violents demi-tours
     char1 = draw_char(c1x);
     Err1 = [Err1 ; abs(x(1)-L1*cos(x(3))-c1x(1)) + abs(x(2)-L1*sin(x(3))-c1x(2))];
 
     // remorque 2 vise le point derrière la premiere remorque
     c2u = slidingRegulation(c2x, [c1x(1)-L2*cos(c1x(3)), c1x(2)-L2*sin(c1x(3))]);
     c2x = c2x + evolution_char(c2x,c2u) * dt;
+    c2x(3) = modulo(c2x(3)+%pi, 2*%pi) - %pi; // pour éviter les violents demi-tours
     char2 = draw_char(c2x);
     Err2 = [Err2 ; abs(c1x(1)-L2*cos(c1x(3))-c2x(1)) + abs(c1x(2)-L2*sin(c1x(3))-c2x(2))];
     
